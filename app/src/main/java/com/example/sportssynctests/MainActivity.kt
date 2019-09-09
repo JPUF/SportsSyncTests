@@ -4,6 +4,8 @@ import android.app.SharedElementCallback
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import io.socket.client.IO
@@ -13,15 +15,20 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
+    private val socket = IO.socket("http://192.168.122.1:4000")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         connectToChatAPI()
+
+        val sendButton = findViewById<Button>(R.id.sendButton)
+        sendButton.setOnClickListener { sendMessage() }
     }
 
     private fun connectToChatAPI() {
-        val socket = IO.socket("http://192.168.122.1:4000")
+
         socket.on(Socket.EVENT_CONNECT, Emitter.Listener {
             val usernameString = "AndroidApp"
             socket.emit("username", usernameString)
@@ -42,6 +49,11 @@ class MainActivity : AppCompatActivity() {
             val recentTV = findViewById<TextView>(R.id.recentText)
             recentTV.text = message
         }
+    }
+
+    private fun sendMessage() {
+        val chatEntry = findViewById<EditText>(R.id.chatEntry)
+        socket.emit("chat_message", chatEntry.text)
     }
 }
 
