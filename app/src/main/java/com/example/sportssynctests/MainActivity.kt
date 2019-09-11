@@ -16,10 +16,9 @@ class MainActivity : AppCompatActivity() {
 
     private val socket = IO.socket("http://192.168.122.1:4000")
 
-    private val chatMessages = listOf<SpannableStringBuilder>(
-        SpannableStringBuilder().bold { append("Username1: ") }.append("Message1"),
-        SpannableStringBuilder().bold { append("Username2: ") }.append("Message2")
-    )
+    private lateinit var adapter: ChatAdapter
+
+    private val chatMessages = mutableListOf<SpannableStringBuilder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val sendButton = findViewById<Button>(R.id.sendButton)
         sendButton.setOnClickListener { sendMessage() }
 
-        val adapter = ChatAdapter()
+        adapter = ChatAdapter()
         findViewById<RecyclerView>(R.id.chat_list).adapter = adapter
         adapter.data = chatMessages
     }
@@ -40,8 +39,8 @@ class MainActivity : AppCompatActivity() {
         socket.on(Socket.EVENT_CONNECT) {
             val usernameString = "AndroidApp"
             socket.emit("username", usernameString)
-            socket.emit("chat_message", "Hello Socket!")
         }
+
 
         socket.on("chat_message") { args ->
             val msgObject = args[0] as JSONObject
@@ -60,8 +59,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayMessage(message: SpannableStringBuilder) {
         runOnUiThread {
-            val recentTV = findViewById<TextView>(R.id.recentText)
-            recentTV.text = message
+            chatMessages.add(message)
+            adapter.data = chatMessages
         }
     }
 
