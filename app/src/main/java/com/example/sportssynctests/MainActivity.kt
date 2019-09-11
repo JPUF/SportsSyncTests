@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.recyclerview.widget.RecyclerView
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
@@ -14,6 +15,11 @@ import org.json.JSONObject
 class MainActivity : AppCompatActivity() {
 
     private val socket = IO.socket("http://192.168.122.1:4000")
+
+    private val chatMessages = listOf<SpannableStringBuilder>(
+        SpannableStringBuilder().bold { append("Username1: ") }.append("Message1"),
+        SpannableStringBuilder().bold { append("Username2: ") }.append("Message2")
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         val sendButton = findViewById<Button>(R.id.sendButton)
         sendButton.setOnClickListener { sendMessage() }
+
+        val adapter = ChatAdapter()
+        findViewById<RecyclerView>(R.id.chat_list).adapter = adapter
+        adapter.data = chatMessages
     }
 
     private fun connectToChatAPI() {
