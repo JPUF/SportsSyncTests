@@ -16,11 +16,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:text="Name"
                 android:ems="10"
                 android:id="@+id/chatEntry" android:layout_weight="5"/>
         <Button
-                android:text="Send"
+                android:text="@string/send"
                 android:layout_width="0dp"
                 android:layout_height="match_parent" android:id="@+id/sendButton" android:layout_weight="1"/>
     </LinearLayout>

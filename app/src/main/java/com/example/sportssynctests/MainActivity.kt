@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             val formattedString = SpannableStringBuilder()
                 .bold { append("$username: ") }
                 .append(message)
-
+            //TODO should delay displaying message by calculated time difference.
             displayMessage(formattedString)
         }
 
@@ -66,7 +67,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendMessage() {
         val chatEntry = findViewById<EditText>(R.id.chatEntry)
-        socket.emit("chat_message", chatEntry.text)
+        val msgObject = JSONObject()
+        msgObject.put("username", "AndroidApp")
+        msgObject.put("message", chatEntry.text)
+        msgObject.put("user_time", Date().time -5000)
+        socket.emit("chat_message", msgObject)
+        chatEntry.text = null
     }
 }
 
